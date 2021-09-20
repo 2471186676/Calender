@@ -30,4 +30,9 @@ function getWeatherDateType(object){
     return new Date(object.dt_txt);
 }
 
-export {getUniquedate};
+function getWeatherUrl(object){
+    const url = "http://openweathermap.org/img/wn/";
+    return url+object.weather.icon;
+}
+
+export {getUniquedate,getWeatherUrl};
