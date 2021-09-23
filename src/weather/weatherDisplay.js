@@ -38,7 +38,7 @@ function getWeatherUrl(object) {
 
 function getWeather(place) {
 	let api =
-		"http://api.openweathermap.org/data/2.5/forecast?q=" +
+		"https://api.openweathermap.org/data/2.5/forecast?q=" +
 		place +
 		"&appid=3f79f896e97cfe497c0497941dc7a42f";
 	return getJSON(api);
