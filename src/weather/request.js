@@ -7,7 +7,7 @@
 
 async function getJSON(api){
     try{
-        const get = await fetch(api);
+        const get = await fetch(api, {mode: 'cors'});
         let response = await get.json(api);
         return response;
     }catch(e){
