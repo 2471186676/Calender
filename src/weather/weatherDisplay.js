@@ -5,35 +5,59 @@ import { createWeatherBox, createSearchBar } from "./createWeatherBar";
 
 // json contain 5 records from a single day
 // I want 1 record per day
+// also min and max temperature of each day
 function getUniquedate(array) {
 	let date = [];
 
-	for (let i = 0; i < array.length; i++) {
-		let push = true;
-		let checkdate = new Date(array[i].dt_txt);
+	let current = 0;
+	for (let uniqueDate = 0; uniqueDate < 5; uniqueDate++) {
+		let condition = true;
+		let thisDate = [];
 
-		for (let x = 0; x < date.length; x++) {
-			if (checkdate.getDate() == getWeatherDateType(date[x]).getDate()) {
-				push = false;
-				x = date.length + 1;
+		while (condition) {
+			let currentDate = new Date(array[current].dt_txt).getDate();
+			let nextDate = new Date(array[current + 1].dt_txt).getDate();
+
+			if (currentDate == nextDate) {
+				thisDate.push(array[current]);
+			} else {
+				condition = false;
 			}
+			current++;
 		}
 
-		if (push) {
-			date.push(array[i]);
-		}
+		let object = {
+			date: new Date(thisDate[0].dt_txt),
+			icon: thisDate[0].weather[0].icon,
+			maxTemp: getMax(thisDate),
+			minTemp: getMin(thisDate),
+			weather: thisDate[0].weather[0].description,
+		};
+		date.push(object);
+		//console.log(date);
 	}
 
 	return date;
 }
 
-function getWeatherDateType(object) {
-	return new Date(object.dt_txt);
+function getMax(array) {
+	let temp = array[0].main.temp;
+	for (let i = 1; i < array.length; i++) {
+		if (temp < array[i].main.temp) {
+			temp = array[i].main.temp;
+		}
+	}
+	return temp;
 }
 
-function getWeatherUrl(object) {
-	const url = "http://openweathermap.org/img/wn/";
-	return url + object.weather.icon;
+function getMin(array) {
+	let temp = array[0].main.temp;
+	for (let i = 1; i < array.length; i++) {
+		if (temp > array[i].main.temp) {
+			temp = array[i].main.temp;
+		}
+	}
+	return temp;
 }
 
 function getWeather(place) {
@@ -41,24 +65,15 @@ function getWeather(place) {
 		"https://api.openweathermap.org/data/2.5/forecast?q=" +
 		place +
 		"&appid=3f79f896e97cfe497c0497941dc7a42f";
+
 	return getJSON(api);
 }
 
 function displayForecast(array, unit) {
 	let data = getUniquedate(array);
-	let objectArray = [];
 
 	// load data into an object
-	for (let i = 0; i < 5; i++) {
-		let weather = {
-			date: new Date(data[i].dt_txt),
-			icon: data[i].weather[0].icon,
-			maxTemp: data[i].main.temp_max,
-			minTemp: data[i].main.temp_min,
-			weather: data[i].weather[0].description,
-		};
-		objectArray.push(weather);
-	}
+	console.log(data);
 
 	const body = document.getElementById("weather");
 	const bar = document.getElementById("weatherBar");
@@ -67,7 +82,7 @@ function displayForecast(array, unit) {
 		bar.remove();
 	}
 
-	body.appendChild(createWeatherBox(objectArray, objectArray.length, unit));
+	body.appendChild(createWeatherBox(data, data.length, unit));
 }
 
 function fetchEvent(_city, unit) {
@@ -81,4 +96,7 @@ function fetchEvent(_city, unit) {
 	});
 }
 
-export { getUniquedate, getWeatherUrl, displayForecast, getWeather , createSearchBar, fetchEvent};
+export {
+	createSearchBar,
+	fetchEvent,
+};

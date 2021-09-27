@@ -1,6 +1,5 @@
 //import './global.css';
-import { getWeather, displayForecast, createSearchBar, fetchEvent } from "./weather/weatherDisplay";
-
+import { createSearchBar, fetchEvent } from "./weather/weatherDisplay";
 
 function readCity() {
 	let button = document.getElementById("test");
@@ -13,19 +12,14 @@ function readCity() {
 	});
 
 	let radio = document.querySelectorAll("input[name='unit']");
-	radio.forEach(element => {
-		element.addEventListener('change', ()=>{
+	radio.forEach((element) => {
+		element.addEventListener("change", () => {
 			let unit = document.querySelector("input[name='unit']:checked");
 			fetchEvent(city.value, unit.value);
 		});
 	});
-
-	
-	
 }
-
 
 createSearchBar();
 readCity();
-fetchEvent("shenzhen","c");
-
+fetchEvent("shenzhen", "c");
